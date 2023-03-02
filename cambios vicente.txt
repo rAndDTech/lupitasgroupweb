@@ -1,0 +1,10 @@
+\AJAX\AjaxScheduleForemanController.cs	
+\Classes\Selector\UsersSelector.cs	
+\DonauMorgen.NEXTFI.Web.csproj	
+\Elements\gallery\addtask.png	
+\Models\ScheduleForemanModel.cs	
+\Views\Accounting\GrossExpenditures.cshtml	
+\Views\Employees\Edit.cshtml	
+\Views\Employees\Schedule.cshtml	
+\Views\Sales\NewCreate.cshtml	
+\Views\Shared\_Layout.cshtml	

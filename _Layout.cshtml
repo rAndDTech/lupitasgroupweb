@@ -1,0 +1,795 @@
+﻿@using Microsoft.AspNet.Identity;
+<!DOCTYPE html>
+<html ng-app="ModuleApplication" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    @*<link href="~/Elements/style.css" rel="stylesheet">*@
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+
+    <link href="~/Elements/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Elements/css/colors_lupitas.css" />
+    <link rel="stylesheet" href="~/Elements/plugins/summernote/summernote.css">
+    <link rel="stylesheet" href="~/Elements/plugins/footable/footable.core.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    @*<link href="~/Elements/css/LupitasStyle.css" rel="stylesheet" />*@
+
+    <title> Lupita's Group | @ViewBag.Title</title>
+    @Styles.Render("~/Elements/css/LupitasStyle.css")
+    @Styles.Render("~/Elements/style.css")
+    @* @Styles.Render("~/Content/jquery-ui.min.css")*@
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/touchspinStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/chosenStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/summernoteStyles")
+    @Styles.Render("~/plugins/iCheckStyles")
+    @Styles.Render("~/plugins/footableStyles")
+    @Styles.Render("~/plugins/dataTablesStyles")
+
+    @RenderSection("styles", required: false)
+    <link href="~/Elements/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <!-- http://localhost:8001/socket.io/socket.io.js-->
+    <script src="https://apirestlupitas-email.herokuapp.com/socket.io/socket.io.js">
+
+
+    </script>
+    <style>
+
+        /*SWEETALERT*/
+        .swal2-container.swal2-shown {
+            background-color: rgba(0,0,0,.4) !important;
+            z-index: 99999 !important;
+        }
+
+        #ModalSweetAlert {
+            background-color: white;
+            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            width: 478px;
+            height: 25%;
+            padding: 17px;
+            border-radius: 5px;
+            text-align: center;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            margin-left: -256px;
+            margin-top: -200px;
+            overflow: hidden;
+            display: none;
+            z-index: 99999;
+            padding-bottom: 40px;
+        }
+
+            #ModalSweetAlert .modal-dialog {
+                width: 100%;
+            }
+
+        #navdiv {
+            width: 98% !important;
+        }
+
+        @@media (min-width: 768px) {
+            #navdiv {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="top-navigation pace-done">
+
+    <!-- Wrapper-->
+    <div id="">
+
+        <!-- Page wraper -->
+        <div id="page-wrapper" class="white-bg" style="padding-right:0 !important ; padding-left:0 !important">
+
+
+            <!-- Top Navigation -->
+            @Html.Partial("_Navigation")
+
+
+            <!-- Main view  -->
+            @RenderBody()
+
+            <!-- Footer -->
+            @*Html.Partial("_Footer")*@
+
+        </div>
+        <!-- End page wrapper-->
+
+    </div>
+    <!-- End wrapper-->
+    <script src="https://kit.fontawesome.com/5242c5f78d.js" crossorigin="anonymous"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @*@Scripts.Render("~/bundles/inspinia")*@
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/metsiMenu")
+    @Scripts.Render("~/plugins/slimScroll")
+    @Scripts.Render("~/bundles/angularJS")
+    @*@Scripts.Render("~/bundles/angularFiles")*@
+    @Scripts.Render("~/plugins/pace")
+    @Scripts.Render("~/bundles/inspinia")
+    @Scripts.Render("~/plugins/touchspin")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/datePicker")
+    @Scripts.Render("~/plugins/priceFormat")
+    @Scripts.Render("~/plugins/summernote")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/footable")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/efficentCommunication")
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/Material/framework_lupitas.js"></script>
+    <script src="~/LupScripts/jquery.unobtrusive-ajax.min.js"></script>
+    @Scripts.Render("~/LupScripts/plugins/steps/jquery.steps.js")
+    @Scripts.Render("~/LupScripts/plugins/sweetalert/sweetalert.min.js")
+    @Scripts.Render("~/LupScripts/plugins/sweetalert2/sweetalert2.all.min.js")
+    <script src="https://unpkg.com/web-audio-daw"></script>
+    <script>
+        $('li#Purchase').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("TentativePurchases", "Cars")';
+        });
+        $('li#Inventory').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("Inventory", "Marketing", new { Message = "", MessageNumber = 0 })';
+        });
+        $('li#Sales').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("NewCreate", "Sales")';
+        });
+        $('li#Finance').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("SearchLoanAndEdit", "LoanStatus")';
+        });
+        $('li#DMV').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("DMVDep", "DMVR")';
+        });
+        $('li#Accounting').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("Board", "Accounting", new { StatusAccounting = 0 }) ';
+        });
+        $('li#References').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location = '@Url.Action("Index", "References")';
+        });
+
+
+
+        $('li#AdminPanel1').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+        $('li#Payments1').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+        $('li#Expenses1').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+        $('li#DocumentsBank1').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+        $('li#FeesDue1').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+        $('li#Reports1').click(function (e) {
+            Swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+
+
+        /**CHAT CODE
+         * NOTE: INTO THIS READY METHOD DON'T PUT MORE METHODS OR OTHER CODE DIFFERENT OR INDEPENDIENT TO
+         *       CHAT
+         */
+        $(document).ready(function () {
+            GetUsersAuthorizations();
+            let url = "https://apirestlupitas-email.herokuapp.com/"//"https://apirestlupitas-email.herokuapp.com/"http://localhost:8001/ ;
+            const buttonSong = $("#music");
+            const inboxchat_name = $("#inboxchat-name");
+            const buttonDisc = $("#disconnect");
+            const lbldisc = $("#lbldisc");
+            const lblcon = $("#lblcon");
+            const buttonSend = $("#send");
+            const sms = document.getElementById("sms");
+            const users_connected = document.getElementById("users-connected");
+            const inboxchat = $("#inboxchat");
+            let socket = null;
+            lbldisc.removeClass("hidden-lp");
+            lblcon.addClass("hidden-lp");
+            let tokenGlobal = "bpvxSY6eHvtZSCV11nbN";
+            let nameGlobal = "Vicente";
+            let uuid = '@Html.Raw(@User.Identity.GetUserId())';
+            tokenGlobal = uuid;
+            $.ajax({
+                type: "GET",
+                url: "/AjaxUsers/GetNameUser?userId=" + uuid,
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: "json",
+                error: function ( data) {
+                    swal("Session Ended");
+                    console.log(data);
+                },
+                success: function (response) {
+                    if (response.success) {
+
+                        name = response.name;
+                        nameGlobal = name;
+                        $("#chatButton").click();
+                    }
+                },
+            });
+
+            let userSelected = "";
+            let LogginUser;
+            const COMMONCHAT = "commonchat";
+            let usersCurrent = [];
+
+            $("#chatButton").bind("click",(event) => {
+
+
+                const conectarSocket = async (token, name) => {
+                    socket = io.connect(url, {
+                        "extraHeaders": {
+                            "x-token": token
+                        }
+                    });//url from server
+                    socket.on('connect', () => {
+                        console.log("conectado");
+                        lbldisc.addClass("hidden-lp");
+                        lblcon.removeClass("hidden-lp");
+                    });
+                    socket.on('disconnect', () => {
+                        console.log("desconectado");
+                        lbldisc.removeClass("hidden-lp");
+                        lblcon.addClass("hidden-lp");
+                        inboxchat.empty();
+                        inboxchat_name.empty();
+                        users_connected.innerHTML = "";
+                        $("#inbox-container").addClass("hidden-lp");
+                        $("#chat-container").removeClass("hidden-lp");
+                    });
+                    socket.on('broadcast', (payload) => {
+                        console.log(payload);
+                        buttonSong.click();
+                        dibujarMensajes(payload);
+                    });
+                    socket.on('user-connected', (payload) => {
+                        let users = payload;
+                        //let conversations =payload.conversations;
+
+                        usersCurrent =[...users];
+
+                        //console.log("current users", users
+                        usersCurrent = usersCurrent.sort(function (a, b) {
+                            if (a.name < b.name) {
+                                return -1;
+                            }
+                            if (a.name > b.name) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+                        console.log("current users", usersCurrent);
+                        dibujarUsuarios(usersCurrent);
+                    });
+                    socket.on("private",async (payload) => {
+                        console.log(payload, "PRIVADO");
+                        buttonSong.click();
+                    });
+
+                    buttonSend.unbind('click').bind("click",(event) => {
+
+                        let message = sms.value;
+                        console.log("usuario:", userSelected)
+
+                        if (userSelected == "") {
+                            swal("Select a chat");
+                        }
+                        else if (message == "") {
+                            swal("Empty field");
+                        }
+                        else {
+
+                            let payload = {};
+                            if (userSelected == COMMONCHAT) {
+                                payload = {
+                                    message: message,
+                                    sendMessage: token,
+                                    date: new Date(),
+                                    sendTo: "all",
+                                    sendFrom: name
+                                }
+                            }
+                            else {
+                                let uuidPrivate = usersCurrent.find(user => (user.token == token)).uuidPrivate.sort();
+                                let uuidPrivate2 = usersCurrent.find(user => (user.token == userSelected)).uuidPrivate.sort();
+                                console.log(uuidPrivate, uuidPrivate2);
+                                let tokenuuidPrivate = "";
+                                for (var i = 0; i < uuidPrivate.length; i++) {
+                                    for (var j = 0; j < uuidPrivate2.length; j++) {
+                                        if (uuidPrivate[i] == uuidPrivate2[j])
+                                        {
+                                            tokenuuidPrivate = uuidPrivate[i];
+                                        }
+                                    }
+                                }
+                                payload = {
+                                    message: message,
+                                    sendMessage: token,
+                                    date: new Date().getTime(),
+                                    sendTo: userSelected,
+                                    sendFrom: name,
+                                    uuidPrivate: tokenuuidPrivate
+                                }
+                                console.log(payload);
+                            }
+                            socket.emit("send", payload);
+                            let date = new Date(payload.date);
+                            let hour = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+                            hour = hour < 10 ? "0" + hour : hour;
+                            let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                            let format = date.getHours() > 12 ? "PM" : "AM";
+                            inboxchat.append(
+                                `<div class="flex-lp flex-direction-row-r-lp">
+                                        <div class="card-lp p-lp-05 mb-lp-3 bg-primary-lp tc-black-lp  w-lp-60">
+                                            <div class="left-lp tw-bold-lp bcb-black-lp">${payload.sendFrom}</div>
+                                            <div class="ts-lp-125">${payload.message}</div>
+                                            <div  class="right-lp ts-lp-1">${hour}:${minutes} ${format}</div >
+                                        </div>
+                                    </div>`);
+                            $("#inboxchat").scrollTop($("#inboxchat").get(0).scrollHeight);
+
+
+                            sms.value = "";
+                        }
+
+                    });
+                }
+                const login = async (token, name) => {
+                    let res = await fetch(url + "api/v1/lupitasgroup/login", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            name: name.toUpperCase(),
+                            token: token
+                        }),
+                        headers: { "Content-type": "application/json; charset=UTF-8" }
+                    })
+                    let datos = await res.json();
+                    console.log(datos);
+                    if (datos.isLoggin) {
+                        //console.log("entre");
+                        LogginUser = datos.user;
+                        myConversations = datos.conversations;
+
+                        await conectarSocket(token, name);
+                    }
+                    else {
+                        swal("Error 500");
+                    }
+                }
+                const logout = async (token) => {
+                    let res = await fetch(url + "api/v1/lupitasgroup/logout", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            token: token
+                        }),
+                        headers: { "Content-type": "application/json; charset=UTF-8" }
+                    })
+                    let datos = await res.json();
+                    console.log(datos);
+                    if (datos.isLogout) {
+                        console.log("desconectado");
+                        socket.disconnect();
+                    }
+                    else {
+                        swal("Fail disconnected");
+                    }
+                }
+                const dibujarUsuarios = (users) => {
+                    let htmlUser = "";
+                    let ObjConversations = [];
+                    users_connected.innerHTML = "";
+                    htmlUser += `<li class="list-group-item chat-conversation itemUser tw-bold-lp flex-lp justify-content--space-between pointer-lp" id="${COMMONCHAT}" >
+               Common Chat
+            </li>`;
+                    for (const user of users)
+                    {
+                        if (LogginUser.token != user.token)
+                        {
+
+
+                            fetch(url + `api/v1/lupitasgroup/conversation/${LogginUser.token}`,
+                                {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                        uuidPrivate: LogginUser.uuidPrivate.sort(),
+                                        uuidPrivate2: user.uuidPrivate.sort()
+                                    }),
+                                    headers: { "Content-type": "application/json; charset=UTF-8" }
+                                }).then(response =>
+                                {
+                                    // with the response, convert it to JSON, then pass it along
+                                    response.json().then(data =>
+                                    {
+                                        // print that JSON
+                                        if (user.isConnected) {
+                                            htmlUser +=
+                                                `<li class=" list-group-item chat-conversation itemUser tw-bold-lp flex-lp justify-content--space-between pointer-lp" id="${user.token}">
+                                        ${user.name} <span class=" flex-lp"><span class="bg-success-lp w-lp-10 status-mark-relative mr-lp-1"> </span><div id="${data.idConversation}" class=" right-lp w-fit-c-lp ts-lp-125 bg-blue tw-bold-lp tc-white-lp ts-lp-075 centerxy-lp px-lp-1 bor-lp-05">${data.unseenMessages} <img src="/Elements/icons/NotesIcon.png" style="width:25px; height:25px;  margin-left:5px;" class="pull-right"></div></span>
+
+                                    </li>`;
+                                        }
+                                        else {
+                                            htmlUser +=
+                                                `<li class="list-group-item chat-conversation itemUser tw-bold-lp pointer-lp  flex-lp justify-content--space-between" id="${user.token}" >
+                                        ${user.name} <div id="${data.idConversation}" class="  right-lp w-fit-c-lp ts-lp-125 bg-blue tw-bold-lp tc-white-lp ts-lp-075 centerxy-lp px-lp-1 bor-lp-05">${data.unseenMessages} <img src="/Elements/icons/NotesIcon.png" style="width:25px; height:25px;  margin-left:5px;" class="pull-right"></div>
+                                    </li>`;
+                                        }
+                                        /*console.log(htmlUser);*/
+                                        users_connected.innerHTML = htmlUser;
+
+                                        //ObjConversations.push(data);
+                                    });
+                                });
+
+
+                        }
+
+
+                    }
+                }
+
+                const dibujarMensajes = (messages) => {
+                    let htmlUser = "";
+                    inboxchat.empty();
+                    messages.forEach(message =>
+                    {
+                        let date = new Date(message.date);
+                        let hour = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+                        hour = hour < 10 ? "0" + hour : hour;
+                        let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                        let format = date.getHours() > 12 ? "PM" : "AM";
+                        if (message.tokenSend == tokenGlobal)
+                        {
+                            htmlUser +=
+                                `<div class=" flex-lp flex-direction-row-r-lp">
+                    <div  class="card-lp p-lp-05 mb-lp-3 bg-primary-lp tc-black-lp   w-lp-60">
+                        <div class="left-lp tw-bold-lp bcb-black-lp ts-lp-15">${message.sendFrom}</div>
+                        <div class="ts-lp-125">${message.message}</div>
+                        <div class="right-lp ts-lp-1">${hour}:${minutes} ${format}</div >
+                    </div>
+                </div>`;
+                        }
+                        else {
+
+                            htmlUser +=
+                                `<div class="">
+                    <div class="card-lp p-lp-05 mb-lp-3 bg-secondary-lp tc-white-lp  w-lp-60">
+                        <div class="left-lp tw-bold-lp bcb-white-lp">${message.sendFrom}</div>
+                        <div class="ts-lp-125">${message.message}</div>
+                      <div class="right-lp ts-lp-1">${hour}:${minutes} ${format}</div >
+                    </div>
+                </div>`;
+                        }
+
+                    });
+
+                    //console.log(messages);
+                    inboxchat.append(htmlUser);
+
+                    setTimeout(() => {
+                        $("#inboxchat").scrollTop($("#inboxchat").get(0).scrollHeight);
+                    }, 100);
+
+
+
+                }
+                users_connected.addEventListener("click", async (e) => {
+                    if (e.target && e.target.matches("li.itemUser"))
+                    {
+                        let group = e.target.id;
+
+                        //alert("clicked " + e.target.innerText );
+                        if (group == COMMONCHAT) {
+                            userSelected = group;
+                            let res = await fetch(url + "api/v1/lupitasgroup/messages", {
+                                method: "GET",
+                                headers: { "Content-type": "application/json; charset=UTF-8" }
+                            })
+                            let datos = await res.json();
+                            inboxchat.empty();
+                            inboxchat_name.empty();
+                            inboxchat_name.text("Common Chat");
+                            dibujarMensajes(datos.messages);
+                            //console.log(datos.messages);
+                        }
+                        else {
+                            userSelected = group;
+                            inboxchat_name.empty();
+                            inboxchat_name.text(usersCurrent.find(user => (user.token == userSelected)).name);
+                            let uuidPrivate = usersCurrent.find(user => (user.token == tokenGlobal)).uuidPrivate.sort();
+                            let uuidPrivate2 = usersCurrent.find(user => (user.token == userSelected)).uuidPrivate.sort();
+                            console.log(uuidPrivate, uuidPrivate2);
+                            let tokenuuidPrivate = "";
+                            for (var i = 0; i < uuidPrivate.length; i++) {
+                                for (var j = 0; j < uuidPrivate2.length; j++) {
+                                    if (uuidPrivate[i] == uuidPrivate2[j]) {
+                                        tokenuuidPrivate = uuidPrivate[i];
+                                        let res = await fetch(url + `api/v1/lupitasgroup/messages/${tokenuuidPrivate}`, {
+                                            method: "GET",
+                                            headers: { "Content-type": "application/json; charset=UTF-8" }
+                                        })
+                                        let datos = await res.json();
+                                        inboxchat.empty();
+                                        socket.emit("reset-unread-messages", { "uuidPrivate": tokenuuidPrivate, "userId": tokenGlobal })
+                                        dibujarMensajes(datos.messages);
+                                    }
+                                }
+                            }
+                            if (tokenuuidPrivate != "")
+                                document.getElementById(tokenuuidPrivate).innerHTML = '0 <img src="/Elements/icons/NotesIcon.png" style="width: 25px; height: 25px; margin-left: 5px; " class="pull-right">';
+                            else {
+                                inboxchat.empty();
+                            }
+
+                            console.log("CHAT privado con id=", group);
+                        }
+                        $("#chat-container").addClass("hidden-lp");
+                        $("#inbox-container").removeClass("hidden-lp");
+                    }
+
+
+                });
+
+                $("#connect").bind("click",async (event) => {
+                    event.stopPropagation();
+                    await login(tokenGlobal, nameGlobal);//n3vB8w4nlGT3G3CFzaWK
+                });
+                buttonDisc.bind("click",async (event) => {
+                    event.stopPropagation();
+
+                    await logout(tokenGlobal);//n3vB8w4nlGT3G3CFzaWK
+                });
+                buttonSong.unbind('click').bind("click",function (e) {
+                    e.stopPropagation();
+                    let bell = new Wad({ source: '/Elements/gallery/facebook-nuevo.wav' });
+                    bell.play();
+                });
+                $("#back-chats").unbind('click').bind("click", function (e) {
+                    e.stopPropagation();
+                    $("#inbox-container").addClass("hidden-lp");
+                    $("#chat-container").removeClass("hidden-lp");
+                });
+               // $("#connect").click();
+                buttonDisc.click();
+                $("#connect").click();
+            });
+
+        });
+        /**END CHAT CODE */
+        /**FOREMAN CODE */
+        $(document).ready(() => {
+           // if (!window.location.href.includes("localhost")) {
+                let WeekDay = {
+                    1: "MON",
+                    2: "TUE",
+                    3: "WED",
+                    4: "THU",
+                    5: "FRI",
+                    6: "SAT",
+                    0: "SUN"
+                };
+                let date = new Date();
+
+                let time = `${date.getHours() < 10 ? "0" : ""}${date.getHours()}:${date.getMinutes() < 10 ? "0" : ""}${date.getMinutes()}`;
+                console.log({ time });
+                let UserId = '@Html.Raw(@User.Identity.GetUserId())';
+                $.ajax({ //Code Modal Sales Price
+                    type: 'GET',
+                    url: `/AjaxScheduleForeman/AddUpdateScheduleForeman?UserId=${UserId}&Time=${time}&WeekDay=${WeekDay[date.getDay()]}`,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (response) => {
+                        if (response.success) {
+                            if (response.message == "") {
+                                //existe
+                               // swal("existe");
+
+                            }
+                            else {
+                                //fue creado
+                                //swal(" fue creado ");
+                            }
+                        }
+                        else {
+                        }
+
+                    },//success
+                    error: () => {
+                    }
+                })//$.ajax
+            //}
+        });
+        /**END FOREMAN CODE */
+        function GetUsersAuthorizations() {
+            var Ban =@Html.Raw(Json.Encode(User.IsInRole("Administrator")));
+            if(!Ban)
+             $.ajax({ //Code Modal Sales Price
+                        type: 'GET',
+                        url: "/AJAXAuthorizations/GetAutorizationsByUser",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.Success) {
+                               RemoveDeparments(response._Authorizations.AuthorizationsDep)
+                            }
+                            else {
+                            }
+
+                        },//success
+                        error: function () {
+                        }
+                    })//$.ajax
+        }
+
+        function RemoveDeparments(Deps) {
+             if (Deps.length > 0) {
+                Deps.forEach(dep => {
+                    if (dep.AccessLevel == 3) {
+                        $("div#navbar ul li#" + dep.Name).remove();
+                    } else {
+                        if (dep.Views.length > 0 )
+                        RemoveViews(dep.Views,dep.Name);
+                    }
+                });
+
+            }
+        }
+        function RemoveViews(Views,Dep) {
+
+            Views.forEach(view => {
+                if (view.AccessLevel == 3) {
+                    console.log("Vista :" + view.Name);
+                    console.log($("div#navbar ul li#" + Dep + " ul").children('li'));
+                   console.log("Dep menu:"+Dep);
+                    $.each($("div#navbar ul li#" + Dep + " ul").children('li'), function (index, value) {
+                        console.log($(value));
+                        console.log($(value).children('a').eq(0));
+                       // console(index + ": " + value);
+                      //  $("div#navbar ul li#" + Dep + " ul").removeChild(index);
+                        if ($(value).children().eq(0).text()==view.Name) {
+                            console.log("SE elimino "+view.Name);
+                            $(value).remove();
+                        }
+
+                    });
+
+
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

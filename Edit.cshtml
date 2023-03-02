@@ -1,0 +1,835 @@
+﻿@model DonauMorgen.NEXTFI.Web.Models.EmployeesXUserPermitsViewModel
+@{
+    ViewBag.Title = "Edit";
+}
+@section styles{
+    <style>
+        .row-yellow {
+            background-color: #ffd908bd /*#fff09e*/ !important;
+            border-bottom: 1.6px solid white;
+        }
+
+        span.number {
+            padding: 6px 6px;
+            font-size: 15px !important;
+        }
+
+        .Buttons-Row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .Save-btn {
+            grid-column: 4/6;
+        }
+
+        @@media (min-width: 768px) {
+            .Buttons-Row {
+                grid-template-columns: repeat(14, 1fr);
+                grid-template-rows: 1fr;
+            }
+
+            .Save-btn {
+                grid-column: 14/15;
+            }
+        }
+
+    </style>
+
+
+}
+
+
+@if (ViewBag.MessageError != null)
+{
+    <div class="alert alert-danger alert-dismissable m-b-n-md">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        @ViewBag.MessageError
+    </div>
+}
+<div class="mt-lp-5">
+    <div class="container-main-lp-100 bg-white-lp mx-lp-0 pt-lp-05">
+        <div class="flex-lp">
+            <h1 class="display-lp-5 center-lp flex-grow-lp-1 mt-lp-0 mb-lp-025">Edit Employees</h1>
+        </div>
+
+        <div class="Buttons-Row mx-lp-1 mb-lp-025">
+            <div class="Save-btn">
+                <a class="btn btn-default btn-danger btn-sm  pull-right" onclick="javascript:window.history.back(-1);return false;">X</a>
+                <button class="button-lp button-lp--success button-lp--md button-lp__container  pull-right m-r-xs" type="button" id="save">
+                    <span class="tw-bold-lp button-lp__text tc-black-lp  ts-lp-13">Save</span>
+                </button>
+            </div>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            <div class="ibox-content">
+                @Html.HiddenFor(model => model.Email)
+                @Html.HiddenFor(model => model.UserId)
+                @Html.HiddenFor(model => model.ExpirationDate)
+                @Html.HiddenFor(model => model.LogicalDelete)
+
+                <input type="hidden" class="userId" value="@Model.UserId" />
+                <input type="hidden" name="subtitle" value="@Model.Subtitle" />
+                @Html.AntiForgeryToken()
+                <div class="grid-lp gap-lp-0 col-lp-2 col-md-lp pt-lp-0">
+                    <div class=" span-lp">
+                        <div class="tabs pt-lp-0 pb-lp-025">
+                            <ul class="tabs__list">
+                                <button type="button" id="btn-smartfunding_" style="display:inline;" class="btn btn-success btn-row  m-r-xs ">eFile Employees Docs</button>
+                            </ul>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">1 Name</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "input-lp ts-lp-1", @required = "required" } })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger " })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">2 Last Name</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = " input-lp ts-lp-1", @required = "required" } })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">3 Store Address</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <select id="StoreId" name="StoreId" class="input-lp ts-lp-1" required>
+                                                @if (Model.StoreId == 0)
+                                                {
+                                                    <option value="">Select a Store</option>
+                                                    foreach (var item in Model.Stores)
+                                                    {
+                                                        <option value="@item.Id">@item.StoreName</option>
+
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    foreach (var item in Model.Stores)
+                                                    {
+                                                        if (item.Id == Model.StoreId)
+                                                        {
+                                                            <option value="@item.Id">@item.StoreName</option>
+                                                        }
+                                                    }
+                                                    foreach (var item in Model.Stores)
+                                                    {
+                                                        if (item.Id != Model.StoreId)
+                                                        {
+                                                            <option value="@item.Id">@item.StoreName</option>
+                                                        }
+                                                    }
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.StoreId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">4 Title</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <select name="Title" class="input-lp ts-lp-1">
+                                                @foreach (var item in Model.Roles)
+                                                {
+                                                    if (Model.Title == item.Name)
+                                                    {
+                                                        <option value="@item.Name" selected>@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Name">@item.Name</option>
+                                                    }
+
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">5 Chain Command</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <select name="Subtitle" class="input-lp ts-lp-1">
+                                                @foreach (var item in Model.RolesSubtitle)
+                                                {
+                                                    if (Model.Subtitle == item.Name)
+                                                    {
+                                                        <option value="@item.Name" selected>@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Name">@item.Name</option>
+                                                    }
+
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">6 Rate</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="Rate" value="@Model.Rate" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">7 Medicare Addl Tax</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="MedicareAddlTax" value="@Model.MedicareAddlTax" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.MedicareAddlTax, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">8 Federal Withholding</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="FederalWithholding" value="@Model.FederalWithholding" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.FederalWithholding, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">9 Social Security</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="SocialSecurity" value="@Model.SocialSecurity" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.SocialSecurity, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">10 Medicare</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="Medicare" value="@Model.Medicare" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Medicare, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">11 CA-Withholding</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="CAWithholding" value="@Model.CAWithholding" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.CAWithholding, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">12 CA-Disability</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="CADisability" value="@Model.CADisability" class="input-lp ts-lp-1 priceFormat" maxlength="10" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.CADisability, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">13 DMV Desk ID</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="IdDMVDesk" value="@Model.IdDMVDesk" class="input-lp ts-lp-1" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">14 Salesperson License No</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" name="LicenseNumberDMV" value="@Model.LicenseNumberDMV" class="input-lp ts-lp-1 " maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">15 Phone</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="tel" data-mask="(999) 999-9999" name="Phone" value="@Model.Phone" class="input-lp ts-lp-1" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">16 Required CMAs</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            <input type="text" onkeypress="return onlyNumbers(event)" name="ReqCMAs" value="@Model.ReqCMAs" class="input-lp ts-lp-1" required />
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.ReqCMAs, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                                <div class="span-lp centery-lp justify-content--space-between">
+                                    <div class="tc-black-lp tw-bold-lp ts-lp-1">17 Department Password</div>
+                                </div>
+                                <div class="span-lp">
+                                    <div class="grid-lp col-lp gap-lp-0">
+                                        <div class="span-lp">
+                                            @Html.EditorFor(model => model.PassDept, new { htmlAttributes = new { @class = "input-lp ts-lp-1" } })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.PassDept, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" px-lp-1 span-lp pt-lp-0">
+                        <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                            <div class="span-lp centery-lp justify-content--space-between">
+                                <div class="tc-black-lp tw-bold-lp ts-lp-1">18 Email</div>
+                                <div class="tc-black-lp tw-bold-lp ts-lp-1">
+                                    <a href="#" data-toggle="modal" data-target="#modalChangeEmail" class="pull-right" style="color: #337ab7;">Edit <i class="fas fa-pencil-alt "></i></a>
+                                </div>
+                            </div>
+                            <div class="span-lp">
+                                <div class="grid-lp col-lp gap-lp-0">
+                                    <div class="span-lp">
+                                        <input class="input-lp ts-lp-1 form-control" value="@Model.Email" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                            <div class="span-lp centery-lp justify-content--space-between">
+                                <div class="tc-black-lp tw-bold-lp ts-lp-1">19 Date</div>
+                            </div>
+                            <div class="span-lp">
+                                <div class="grid-lp col-lp gap-lp-0">
+                                    <div class="span-lp">
+                                        <input class="input-lp ts-lp-1" value="@ViewBag.DateCreation" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-lp col-lp-2  gap-lp-0 bcb-white-lp bg-primary-lp  pl-lp-05">
+                            <div class="span-lp centery-lp justify-content--space-between">
+                                <div class="tc-black-lp tw-bold-lp ts-lp-1">20 UserName</div>
+                            </div>
+                            <div class="span-lp">
+                                <div class="grid-lp col-lp gap-lp-0">
+                                    <div class="span-lp">
+                                        @Html.EditorFor(model => model.UserName, new
+                                  {
+                                      htmlAttributes = new
+                            {
+                                @onkeypress = "return usernameValidation(event)",
+                                @type = "text",
+                                @class = "input-lp ts-lp-1 username",
+                                @id = "username",
+                                @placeholder = "Username",
+                                @required = "required",
+                            }
+                                  })
+                                    </div>
+                                    @Html.ValidationMessage("UserExist")
+
+                                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                    <span class="UserNameExist"></span>
+                                    @Html.ValidationMessage("UserNameExist", new { htmlAttributes = new { @class = "UserNameExist" } })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>@ViewBag.Link</label>
+                        </div>
+                        <h3 class="hidden">Check permits for Salesperson </h3>
+                        <div class="hidden">
+                            <div class="form-group">
+                                <p>Assign wich permits has the Salesperson</p>
+                            </div>
+                            <div class="form-group">
+                                @Html.CheckBoxFor(modelItem => Model.CreatePermit, new { @class = "checkbox-seller", @id = "checkboxCreate" }) Create Permit
+                                @*<input type="checkbox" name="CreatePermit" value="@Model.CreatePermit"> Create Permit<br>*@
+                            </div>
+                            <div class="form-group">
+                                @Html.CheckBoxFor(modelItem => Model.EditPermit, new { @class = "checkbox-seller", @id = "checkboxEdit" }) Edit Permit
+                                @*<input type="checkbox" name="EditPermit" value="@Model.EditPermit"> Edit Permit<br>*@
+                            </div>
+                            <div class="form-group">
+                                @Html.CheckBoxFor(modelItem => Model.DeletePermit, new { @class = "checkbox-seller", @id = "checkboxDelete" }) Delete Permite
+                                @*<input type="checkbox" name="DeletePermit" value="@Model.DeletePermit"> Delete Permit<br>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr-line-dashed m-t-none"></div>
+                <div class="form-action no-color">
+                    <button class="button-lp button-lp--success button-lp--md button-lp__container  pull-right m-r-xs hidden" type="submit" id="save2">
+                        <span class="tw-bold-lp button-lp__text tc-black-lp  ts-lp-13">Save</span>
+                    </button>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+<!--Modal - Change Email-->
+<div class="modal modalChangeDate fade" id="modalChangeEmail" role="dialog">
+    <div class="modal-dialog modal-md" style="">
+
+        <!-- Modal content-->
+        <div class="modal-content  " id="demo">
+            @using (Html.BeginForm("ChangeEmail", "Employees", new { }, FormMethod.Post, new { @if = "formChangeDate" }))
+            {
+                <div class="modal-header bg-warning ">
+                    <h2 class="modal-title m-l-sm"><strong>Edit Email</strong></h2>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="@Model.UserId" name="userId" />
+                    <input type="hidden" value="@Model.Email" name="oldEmail" />
+                    <input type="hidden" value="@Model.Id" name="id" />
+                    <div class="row form-group">
+                        <label class="col-sm-2">Email</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="email" id="newEmail" name="newEmail" value="@Model.Email" placeholder="email@lupitasgroup.com" required />
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning btn-date-change">Save</button>
+                    <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</button>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="smartFunding_" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="btn btn-danger pull-right m-l-xs" onclick="SaveDocs();" data-dismiss="modal">X</button>
+                <h2 class="modal-title text-center fond-big font-bold"><strong>eFile Employees Dcos</strong></h2>
+            </div>
+
+            <!-- Modal body -->
+            <div id="smart-funding" class="modal-body p-xxs">
+                <div class="container-main-lp-100">
+                    <div class="grid-lp col-lp">
+                        <div class="tabs ">
+
+                            <div class="tabs__content">
+                                <div class="tabs__section4 tabs__section--active4" data-index4="0">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <table id="smart-table" class="table-responsive table-striped table-bordered" style="width:100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="center-lp "><h2 class="my-lp-1 tw-bold-lp ts-lp-15">File's Name</h2></th>
+                                                        <th class=" center-lp"><h2 class="my-lp-1 tw-bold-lp ts-lp-15">Last Download</h2></th>
+                                                        <th class="text-right pr-lp-05 "><span class="font-italic my-lp-1">(Accepted file format .PDF)</span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="m-l-sm font-bold">Salesperson License</p>
+                                                        </td>
+                                                        <td class="text-center font-bold"></td>
+                                                        <td id="Employeelicensetd">
+                                                            <div class="fileinput fileinput-new m-l-xs" data-provides="fileinput">
+                                                                <span class="btn btn-success btn-file">
+                                                                    <span class="fileinput-new">Swap</span>
+                                                                    <span class="fileinput-exists">Change</span><input type="file" name="Employeelicense" accept="application/pdf" />
+                                                                </span>
+                                                                <span class="fileinput-filename"></span>
+                                                                <a href="#" class="close fileinput-exists btn-success btn-xs" data-dismiss="fileinput" style="float: none">X</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="m-l-sm font-bold">
+                                                                Driver License
+                                                            </p>
+                                                        </td>
+                                                        <td class="text-center font-bold"></td>
+                                                        <td id="Driverlicensetd">
+                                                            <div class="fileinput fileinput-new m-l-xs" data-provides="fileinput">
+                                                                <span class="btn btn-success btn-file">
+                                                                    <span class="fileinput-new">Swap</span>
+                                                                    <span class="fileinput-exists">Change</span><input type="file" name="Driverlicense" accept="application/pdf" />
+                                                                </span>
+                                                                <span class="fileinput-filename"></span>
+                                                                <a href="#" class="close fileinput-exists btn-success btn-xs" data-dismiss="fileinput" style="float: none">X</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="m-l-sm font-bold">
+                                                                IRS
+                                                            </p>
+                                                        </td>
+                                                        <td class="text-center font-bold"></td>
+                                                        <td id="IRStd">
+                                                            <div class="fileinput fileinput-new m-l-xs" data-provides="fileinput">
+                                                                <span class="btn btn-success btn-file">
+                                                                    <span class="fileinput-new">Swap</span>
+                                                                    <span class="fileinput-exists">Change</span><input type="file" name="IRS" accept="application/pdf" />
+                                                                </span>
+                                                                <span class="fileinput-filename"></span>
+                                                                <a href="#" class="close fileinput-exists btn-success btn-xs" data-dismiss="fileinput" style="float: none">X</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <!--Start Material Lupitas CSS-->
+    <script src="https://kit.fontawesome.com/5242c5f78d.js" crossorigin="anonymous"></script>
+    <script src="~/Scripts/Material/framework_lupitas.js"></script>
+    <link href="~/Elements/css/FrameworkLupitas/framework_lupitas.css" rel="stylesheet" />
+    <link href="~/Elements/css/colors_lupitas.css" rel="stylesheet" />
+    <link href="~/Elements/css/buttonsMaterialDesign.css" rel="stylesheet" />
+    <link href="~/Elements/css/inputMaterialDesign.css" rel="stylesheet" />
+    <!--End Material Lupitas CSS-->
+    <script>
+
+        $(document).ready(function () {
+
+            $('.priceFormat').priceFormat({
+                prefix: '',
+                thousandsSeparator: ',',
+                decimals: 2,
+                min: 0,
+                max: 18,
+                step: 0.01
+            });
+            $('#username').keyup(function () {
+                var username = $('#username').val();
+                var userId = $('.userId').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: "/Employees/ChangeUserName?username=" + username + "&userId=" + userId,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        //console.log(response.userExist)
+                        //console.log(response.message);
+                        //User Exist
+                        if (response.userExist == true) {
+                            $('.btnCreate').attr("disabled", true);
+                            $('span.UserNameExist').text(response.message);
+                            $("#username").css("border-color", "#f44336");
+                        }
+                        //User don't exist
+                        else if (response.userExist == false) {
+                            $("#username").css("border-color", "#008000");
+                            $('.btnCreate').attr("disabled", false);
+                            $('span.UserNameExist').text(response.message);
+
+                        }
+                    },//success
+
+                })//$.ajax
+            });
+
+            function usernameValidation(e) {
+                key = e.keyCode || e.which;
+                key_ = String.fromCharCode(key).toLowerCase();
+                letters = " abcdefghijklmnopqrstuvwxyz0123456789._";
+                specials = "32";
+
+                key_specials = false
+                for (var i in specials) {
+                    if (key == 32) {
+                        return false;
+                        // break;
+                    }
+                }
+
+                if (letters.indexOf(key_) == -1 && !key_specials) {
+                    return false;
+                }
+            }
+        });
+        //docs
+        $('#save').on('click', function () {
+            $('input[name="subtitle"]').val($('select[name="Subtitle"]').val());
+            $('#save2').click();
+        });
+        $('button#btn-smartfunding_').click(function () {
+            var Id = $('input[name="UserId"]').val();
+            $('div#smartFunding_').modal('show');
+            swal({
+                title: 'Searching...',
+                text: '',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onOpen: () => {
+                    Swal.showLoading();
+                    $.ajax({
+                        url: "/AjaxStores/getDocsEmplooyee?Id=" + Id,
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            Swal.close();
+                            if (response.success) {
+                                SetDownloadsDocs(response.archives);
+                            }
+                        }
+
+                    });
+                }
+            });
+
+        });
+        function UpdateHour(Option) {
+            var date = new Date();
+            var Id = "";
+            switch (Option) {
+                case 0:
+                    Id = "Employeelicensetd";
+                    break;
+                case 1:
+                    Id = "Driverlicensetd";
+                    break;
+                case 2:
+                    Id = "IRStd";
+                    break;
+                    
+            }
+            $("td#" + Id).prev().empty();
+            var stringdate = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear() + "  " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
+                (date.getHours() > 12 ? "p.m." : "a.m.");
+            $("td#" + Id).prev().html(stringdate);
+        }
+        function ReplaceFileText(existFile) {
+            if (existFile)
+                return "Swap";
+            else
+                return "Upload Doc";
+        }
+        function SetDownloadsDocs(archives) {
+            fileEmployee_Licens = false;
+            fileDriverlicense = false;
+            fileIRS = false;
+
+            $('#Employeelicensetd').empty();
+            $('#Driverlicensetd').empty();
+            $('#IRStd').empty();
+
+            $.each(archives, function (i, item) {
+                if (item.Name.includes("_Sales_Person_License")) {
+                    fileEmployee_Licens = true;
+                    $('#Employeelicensetd').addClass('text-left');
+                    $('#Employeelicensetd').html('<a class="m-l-sm" onclick="UpdateHour(0)" href="/Sales/DescargarArchivo/' + item.Id + '"><i class="fas fa-file-download fa-2x m-r-xs"></i></a>' +
+                        '<strong class="m-r-sm">' + item.Name + '</strong>');
+                    $("td#Employeelicensetd").prev().html(item.DateLasDownload);
+                }
+
+
+                if (item.Name.includes("_Driver_license")) {
+                    fileDriverlicense = true;
+                    $('#Driverlicensetd').addClass('text-left');
+                    $('#Driverlicensetd').html('<a class="m-l-sm" onclick="UpdateHour(1)" href="/Sales/DescargarArchivo/' + item.Id + '"><i class="fas fa-file-download fa-2x m-r-xs"></i></a>' +
+                        '<strong class="m-r-sm">' + item.Name + '</strong>');
+                    $("td#Driverlicensetd").prev().html(item.DateLasDownload);
+                }
+
+                if (item.Name.includes("_IRS")) {
+                    fileIRS = true;
+                    $('#IRStd').addClass('text-left');
+                    $('#IRStd').html('<a class="m-l-sm" onclick="UpdateHour(2)" href="/Sales/DescargarArchivo/' + item.Id + '"><i class="fas fa-file-download fa-2x m-r-xs"></i></a>' +
+                        '<strong class="m-r-sm">' + item.Name + '</strong>');
+                    $("td#IRStd").prev().html(item.DateLasDownload);
+                }
+            });
+
+
+
+            $('#Driverlicensetd').addClass('text-right');
+            $('#Driverlicensetd').append(' <div class="fileinput fileinput-new" data-provides="fileinput">' +
+                '<span class="btn btn-success btn-file m-t-sm m-r-sm">' +
+                '<span class="fileinput-new">' + ReplaceFileText(fileDriverlicense) + '</span>' +
+                '<span class="fileinput-exists">Change</span><input type="file" name="Driverlicense" accept="application/pdf"/>' +
+                '</span>' +
+                '<span class="fileinput-filename"></span>' +
+                '<a href="#" class="close fileinput-exists btn-success btn-xs" data-dismiss="fileinput" style="float: none">×</a>' +
+                '</div>');
+
+            $('#Employeelicensetd').addClass('text-right');
+            $('#Employeelicensetd').append(' <div class="fileinput fileinput-new" data-provides="fileinput">' +
+                '<span class="btn btn-success btn-file m-t-sm m-r-sm">' +
+                '<span class="fileinput-new">' + ReplaceFileText(fileEmployee_Licens) + '</span>' +
+                '<span class="fileinput-exists">Change</span><input type="file" name="Employeelicense" accept="application/pdf"/>' +
+                '</span>' +
+                '<span class="fileinput-filename"></span>' +
+                '<a href="#" class="close fileinput-exists btn-success btn-xs" data-dismiss="fileinput" style="float: none">×</a>' +
+                '</div>');
+
+            $('#IRStd').addClass('text-right');
+            $('#IRStd').append(' <div class="fileinput fileinput-new" data-provides="fileinput">' +
+                '<span class="btn btn-success btn-file m-t-sm m-r-sm">' +
+                '<span class="fileinput-new">' + ReplaceFileText(fileIRS) + '</span>' +
+                '<span class="fileinput-exists">Change</span><input type="file" name="IRS" accept="application/pdf"/>' +
+                '</span>' +
+                '<span class="fileinput-filename"></span>' +
+                '<a href="#" class="close fileinput-exists btn-success btn-xs" data-dismiss="fileinput" style="float: none">×</a>' +
+                '</div>');
+
+
+        }
+        function SaveDocs() {
+            var Employeelicense = null;
+            if ($('input[name="Employeelicense"]').length > 0) {
+                Employeelicense = $('input[name="Employeelicense"]')[0].files[0];
+            }
+            var Driverlicense = null;
+            if ($('input[name="Driverlicense"]').length > 0) {
+                Driverlicense = $('input[name="Driverlicense"]')[0].files[0];
+            }
+            var IRS = null;
+            if ($('input[name="IRS"]').length > 0) {
+                IRS = $('input[name="IRS"]')[0].files[0];
+            }
+            var Id = $('input[name="UserId"]').val();
+            var data = new FormData();
+            data.append('Employeelicense', Employeelicense);
+            data.append('Driverlicense', Driverlicense);
+            data.append('IRS', IRS);
+            data.append('Id', Id);
+
+            $.ajax({
+                type: "POST",
+                url: "/AjaxStores/POSTSaveDocsEmployee",
+                data: data,
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        swal({
+                            title: response.message,
+                            text: '',
+                            icon: 'success',
+                            timer: 3000,
+                            showCancelButton: false,
+                            showConfirmButton: false
+                        });
+
+                        SetDownloadsDocs(response.archives);
+                    } else {
+                       
+                    }
+                },
+            });
+        }
+    </script>
+
+}
